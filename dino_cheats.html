@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dino Cheats 2.0</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #1a1a1a, #333);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    h1 {
+        color: orange;
+        text-shadow: 0 0 10px yellow;
+    }
+    .buttons {
+        margin-top: 30px;
+    }
+    button {
+        margin: 10px;
+        padding: 15px 30px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    button:hover {
+        transform: scale(1.1);
+    }
+    .adm {
+        background-color: orange;
+        color: black;
+    }
+    .normal {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .instructions {
+        margin-top: 20px;
+        text-align: center;
+        max-width: 600px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+</style>
+</head>
+<body>
+    <h1>Dino Cheats 2.0</h1>
+    <div class="buttons">
+        <button class="adm" onclick="loadAdmin()">Modo ADM</button>
+        <button class="normal" onclick="loadNormal()">Modo Normal</button>
+    </div>
+    <div class="instructions">
+        Clique no modo desejado. <br>
+        <b>Modo ADM:</b> Cheats completos com Modo Deus, Hit Kill, super pulo e velocidade. <br>
+        <b>Modo Normal:</b> Jogo normal com HI animado, Pontos animados e final ao atingir 1 milhão.
+    </div>
+
+    <script>
+        // -----------------------------
+        // Modo ADM – Script completo automático
+        // -----------------------------
+        function loadAdmin() {
+            if (!confirm("ATENÇÃO: Modo ADM ativado. Cheats serão aplicados automaticamente.")) return;
+            alert("Modo ADM ativado! Vá para a aba do jogo Dino no Chrome.");
+            
+            // Script Dino Cheats 2.0 completo
+            let scriptADM = `
+            /* ================================
+               Dino Cheats 2.0 – Modo ADM
+               Inclui Modo Deus, Hit Kill, super pulo e velocidade
+            ================================ */
+            let panel = document.createElement('div');
+            panel.style.position='fixed';
+            panel.style.top='10px';
+            panel.style.right='10px';
+            panel.style.backgroundColor='rgba(0,0,0,0.7)';
+            panel.style.padding='10px';
+            panel.style.borderRadius='10px';
+            panel.style.zIndex=9999;
+            panel.style.fontFamily='Arial';
+            panel.style.color='white';
+            panel.style.textAlign='center';
+            panel.innerHTML='<b>Dino Cheats</b><br>';
+            document.body.appendChild(panel);
+            function createButton(name,onClick){
+                let btn=document.createElement('button');
+                btn.innerText=name;
+                btn.style.margin='5px';
+                btn.style.padding='5px 10px';
+                btn.style.cursor='pointer';
+                btn.style.border='none';
+                btn.style.borderRadius='5px';
+                btn.style.backgroundColor='orange';
+                btn.style.color='black';
+                btn.onclick=onClick;
+                panel.appendChild(btn);
+            }
+            let originalGameOver=Runner.prototype.gameOver;
+            let godModeInterval,hitKillInterval,fireParticles=[];
+            let scoreDiv=document.createElement('div');
+            scoreDiv.style.position='fixed';
+            scoreDiv.style.top='10px';
+            scoreDiv.style.left='10px';
+            scoreDiv.style.backgroundColor='rgba(0,0,0,0.5)';
+            scoreDiv.style.padding='5px 10px';
+            scoreDiv.style.borderRadius='5px';
+            scoreDiv.style.color='white';
+            scoreDiv.style.fontFamily='monospace';
+            scoreDiv.style.zIndex=9999;
+            document.body.appendChild(scoreDiv);
+            let highScore=0;
+            let displayedScore=0;
+            let jumpHeight=30;
+            setInterval(()=>{
+                if(Runner.instance_){
+                    let currentScore=Math.floor(Runner.instance_.distance);
+                    if(currentScore>highScore) highScore=currentScore;
+                    displayedScore+=(currentScore-displayedScore)*0.1;
+                    scoreDiv.innerHTML='HI: <span id="hi">'+highScore+'</span> | Pontos: '+Math.floor(displayedScore)+' | Velocidade: '+Math.floor(Runner.instance_.currentSpeed);
+                    let hiSpan=document.getElementById('hi');
+                    if(currentScore===highScore && currentScore>0){hiSpan.style.color=(Math.floor(Date.now()/250)%2===0)?'yellow':'white';}
+                    else{hiSpan.style.color='white';}
+                }
+            },50);
+
+            function activateGodMode(){
+                clearInterval(hitKillInterval);clearInterval(godModeInterval);
+                Runner.instance_.gameOver=function(){};
+                Runner.instance_.setSpeed(500);
+                Runner.instance_.tRex.setJumpVelocity(jumpHeight);
+                let dinoEl=document.querySelector('.runner-container');
+                dinoEl.style.transition='filter 0.1s';
+                document.addEventListener('keydown',function teleport(e){if(e.code==='Space')Runner.instance_.tRex.yPos=10;});
+                let slowMotion=false;
+                document.addEventListener('keydown',function slow(e){if(e.key.toLowerCase()==='s'){slowMotion=!slowMotion;Runner.instance_.timeScale=slowMotion?0.3:1;console.log(slowMotion?'🎬 Câmera lenta ON':'⏩ Velocidade normal');}});
+                godModeInterval=setInterval(()=>{
+                    Runner.instance_.setSpeed(Runner.instance_.currentSpeed+50);
+                    let rect=dinoEl.getBoundingClientRect();
+                    let x=rect.left+rect.width/2; let y=rect.top+rect.height;
+                    for(let i=0;i<3;i++){fireParticles.push({x:x,y:y,size:Math.random()*6+4,dx:Math.random()*-5-1,dy:Math.random()*-2,life:30+Math.random()*20,color:['orange','red','yellow'][Math.floor(Math.random()*3)]});}
+                    fireParticles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.life--;});
+                    fireParticles=fireParticles.filter(p=>p.life>0);
+                    let oldCanvas=document.getElementById('fireCanvas'); if(oldCanvas) oldCanvas.remove();
+                    let canvas=document.createElement('canvas'); canvas.id='fireCanvas';
+                    canvas.style.position='fixed'; canvas.style.top='0'; canvas.style.left='0'; canvas.style.pointerEvents='none';
+                    canvas.width=window.innerWidth; canvas.height=window.innerHeight; canvas.style.zIndex=9998;
+                    document.body.appendChild(canvas); let ctx=canvas.getContext('2d');
+                    fireParticles.forEach(p=>{ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();});
+                },50);
+                console.log('🦖 Modo Deus ATIVO com fogo animado!');
+            }
+            function deactivateGodMode(){clearInterval(godModeInterval);let dinoEl=document.querySelector('.runner-container');dinoEl.style.filter='';let oldCanvas=document.getElementById('fireCanvas');if(oldCanvas) oldCanvas.remove();Runner.instance_.gameOver=originalGameOver;console.log('⚡ Modo Deus DESATIVADO');}
+            function activateHitKill(){clearInterval(godModeInterval);Runner.instance_.gameOver=originalGameOver;hitKillInterval=setInterval(()=>{if(Runner.instance_.horizon.obstacles.length>0){let obstacle=Runner.instance_.horizon.obstacles[0];let dinoX=Runner.instance_.tRex.xPos+Runner.instance_.tRex.config.WIDTH;let obsX=obstacle.xPos;if(obsX<dinoX) Runner.instance_.gameOver();}},10);console.log('💀 Hit Kill ativado!');}
+            function dieNow(){clearInterval(godModeInterval);clearInterval(hitKillInterval);Runner.instance_.gameOver=originalGameOver;Runner.instance_.stop();Runner.instance_.crashed=true;Runner.instance_.tRex.status='CRASHED';console.log('☠️ Dino morto!');}
+            function setSpeed(){let speed=prompt('Digite a velocidade desejada (ex: 10, 50, 200):');speed=parseFloat(speed);if(!isNaN(speed)){Runner.instance_.setSpeed(speed);console.log('⚡ Velocidade definida: '+speed);}else{console.log('❌ Valor inválido!');}}
+            function setJumpHeight(){let height=prompt('Digite a altura do pulo (ex: 10, 30, 60):');height=parseFloat(height);if(!isNaN(height)){jumpHeight=height;Runner.instance_.tRex.setJumpVelocity(jumpHeight);console.log('⬆️ Altura do pulo definida: '+jumpHeight);}else{console.log('❌ Valor inválido!');}}
+            function finalEpic(){deactivateGodMode();clearInterval(hitKillInterval);let msg=document.createElement('div');msg.innerHTML="<h1 style='color:orange;text-shadow:0 0 10px yellow;'>🎉 VOCÊ TERMINOU O DINO CHEATS 2.0! 🎉</h1>";msg.style.position='fixed';msg.style.top='40%';msg.style.left='50%';msg.style.transform='translate(-50%,-50%)';msg.style.zIndex=9999;msg.style.textAlign='center';document.body.appendChild(msg);console.log('🏁 Final épico ativado!');}
+            createButton('Modo Deus',activateGodMode);
+            createButton('Desativar Deus',deactivateGodMode);
+            createButton('Hit Kill',activateHitKill);
+            createButton('Morrer',dieNow);
+            createButton('Definir Velocidade',setSpeed);
+            createButton('Definir Pulo',setJumpHeight);
+            createButton('Finalizar',finalEpic);
+            `;
+
+            let s = document.createElement('script');
+            s.innerHTML = scriptADM;
+            document.body.appendChild(s);
+        }
+
+        // -----------------------------
+        // Modo Normal – Script automático
+        // -----------------------------
+        function loadNormal() {
+            if (!confirm("Modo Normal ativado. Você jogará normalmente.")) return;
+            alert("Modo Normal ativado! Vá para a aba do jogo Dino no Chrome.");
+
+            let scriptNormal = `
+            /* ================================
+               Dino Final Normal – Jogo Normal
+               HI animado, Pontos animados e final ao atingir 1 milhão
+            ================================ */
+            let scoreDiv=document.createElement('div');
+            scoreDiv.style.position='fixed';
+            scoreDiv.style.top='10px';
+            scoreDiv.style.left='10px';
+            scoreDiv.style.backgroundColor='rgba(0,0,0,0.5)';
+            scoreDiv.style.padding='5px 10px';
+            scoreDiv.style.borderRadius='5px';
+            scoreDiv.style.color='white';
+            scoreDiv.style.fontFamily='monospace';
+            scoreDiv.style.zIndex=9999;
+            document.body.appendChild(scoreDiv);
+            let highScore=0,displayedScore=0,finalReached=false;
+            setInterval(()=>{
+                if(Runner.instance_){
+                    let currentScore=Math.floor(Runner.instance_.distance);
+                    if(currentScore>highScore) highScore=currentScore;
+                    displayedScore+=(currentScore-displayedScore)*0.05;
+                    scoreDiv.innerHTML='HI: <span id="hi">'+highScore+'</span> | Pontos: '+Math.floor(displayedScore);
+                    let hiSpan=document.getElementById('hi');
+                    if(currentScore===highScore && currentScore>0){hiSpan.style.color=(Math.floor(Date.now()/250)%2===0)?'yellow':'white';}
+                    else{hiSpan.style.color='white';}
+                    if(!finalReached && currentScore>=1000000){
+                        finalReached=true;
+                        let msg=document.createElement('div');
+                        msg.innerHTML="<h1 style='color:orange;text-shadow:0 0 10px yellow;'>🎉 PARABÉNS! VOCÊ ZEROU O DINO! 🎉</h1>";
+                        msg.style.position='fixed'; msg.style.top='40%'; msg.style.left='50%'; msg.style.transform='translate(-50%,-50%)';
+                        msg.style.zIndex=9999; msg.style.textAlign='center'; document.body.appendChild(msg);
+                        console.log('🏁 Final alcançado com 1 milhão de pontos!');
+                    }
+                }
+            },50);
+            `;
+
+            let s = document.createElement('script');
+            s.innerHTML = scriptNormal;
+            document.body.appendChild(s);
+        }
+    </script>
+</body>
+</html>
